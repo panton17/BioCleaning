@@ -4,15 +4,6 @@
 {% block content %}
 <div id="content-div" data-replace-url="`/login`">
 
-  <div data-text="ctx.signals.JSON()">
-    <style>
-      me {
-          margin: 50px;
-      }
-    </style>
-    Signals
-  </div>
-
   <!-- TITLE SINGLE -->
   <div>
     <style>
@@ -47,7 +38,7 @@
   <!-- method="post" action="/users/login" -->
   <form data-signals="{users_submit_button_disable:false}" data-on-submit="$users_submit_button_disable = true;@post('/login_validate', {contentType: 'form'})">
     {{ render_partial('partials/forms-input.html', idalwayschange='loginemail', name='email', fieldtext='Email', type = 'email', pattern="^[^@]+@[^@]+\.[^@]+$", errormessage="Invalid email address") }}
-    {{ render_partial('partials/forms-input-password.html', idalwayschange='loginpass', fieldtext='Password') }}
+    {{ render_partial('partials/forms-input-password.html', idalwayschange='loginpass', name='password', fieldtext='Password') }}
 
     <!-- Forgot password? -->
     <div>

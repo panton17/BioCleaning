@@ -23,8 +23,6 @@ uv add requests
 uv remove python-multipart
 uvicorn main:app --reload
 
-git remote add origin https://github.com/panton17/BioCleaning.git
-git branch -M main
 
 
 Change:
@@ -40,6 +38,16 @@ Does that sound odd @Delaney ? If you drop an ID from an inner div and use merge
 Hmm... That's interesting... But why are you doing that?
 Why not use the defaults?
 This is not HTMX
+
+
+  <div data-text="ctx.signals.JSON()">
+    <style>
+      me {
+          margin: 50px;
+      }
+    </style>
+    Signals
+  </div>
 
 
 

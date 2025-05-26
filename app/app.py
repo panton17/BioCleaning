@@ -84,7 +84,7 @@ def login_form(request: Request):
         templ = templates.get_template("login.html")
         rendered_html_str = "".join(templ.blocks["content"](templ.new_context({"request": request})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, selector="#content-div", use_view_transition=True, merge_mode=FragmentMergeMode.OUTER)
+            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
         return DatastarStreamingResponse(_())
     else:
         return templates.TemplateResponse(
@@ -126,7 +126,7 @@ async def login_validate(request: Request, email: Annotated[str, Form()], passwo
         templ = templates.get_template("snippets.html")
         rendered_html_str = "".join(templ.blocks["loginsuccess"](templ.new_context({"request": request})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, selector="#content-div", use_view_transition=True, merge_mode=FragmentMergeMode.OUTER)
+            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
             time.sleep(3)
             yield SSE.redirect("/authenticated-route")
 
@@ -142,13 +142,13 @@ async def login_validate(request: Request, email: Annotated[str, Form()], passwo
         templ = templates.get_template("snippets.html")
         rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"loginerrordiv", "signuperrormessage": 'Invalid credentials', "errortitle": 'Login failed'})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, selector="#loginerrordiv", use_view_transition=True, merge_mode=FragmentMergeMode.OUTER)
+            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
         return DatastarStreamingResponse(_())
     else:
         templ = templates.get_template("snippets.html")
         rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"loginerrordiv", "signuperrormessage": f"Login failed with status code: {response.status_code}", "errortitle": 'Login failed'})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, selector="#loginerrordiv", use_view_transition=True, merge_mode=FragmentMergeMode.OUTER)
+            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
         return DatastarStreamingResponse(_())
 
 
@@ -158,7 +158,7 @@ def signup_form(request: Request):
         templ = templates.get_template("signup.html")
         rendered_html_str = "".join(templ.blocks["content"](templ.new_context({"request": request})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, selector="#content-div", use_view_transition=True, merge_mode=FragmentMergeMode.OUTER)
+            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
         return DatastarStreamingResponse(_())
     else:
         return templates.TemplateResponse(
@@ -176,7 +176,7 @@ async def signup_validate(request: Request, email: Annotated[str, Form()], passw
         templ = templates.get_template("snippets.html")
         rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"signuperrordiv", "signuperrormessage": 'Password Repeat missmatch', "errortitle": 'Sign Up failed'})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, selector="#signupfailed", use_view_transition=True, merge_mode=FragmentMergeMode.OUTER)
+            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
         return DatastarStreamingResponse(_())
 
     url = "http://localhost:8000/auth/register"
@@ -199,7 +199,7 @@ async def signup_validate(request: Request, email: Annotated[str, Form()], passw
         templ = templates.get_template("snippets.html")
         rendered_html_str = "".join(templ.blocks["signupsuccess"](templ.new_context({"request": request})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, selector="#content-div", use_view_transition=True, merge_mode=FragmentMergeMode.OUTER)
+            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
         return DatastarStreamingResponse(_())
     elif response.status_code == 400:
         code_value = response.json()["detail"]
@@ -207,19 +207,19 @@ async def signup_validate(request: Request, email: Annotated[str, Form()], passw
             templ = templates.get_template("snippets.html")
             rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"signuperrordiv", "signuperrormessage": 'Email address already in use', "errortitle": 'Sign Up failed'})))
             async def _():
-                yield SSE.merge_fragments(fragments=rendered_html_str, selector="#signuperrordiv", use_view_transition=True, merge_mode=FragmentMergeMode.OUTER)
+                yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
             return DatastarStreamingResponse(_())
         elif code_value == 'REGISTER_INVALID_PASSWORD':
             templ = templates.get_template("snippets.html")
             rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"signuperrordiv", "signuperrormessage": 'Invalid Password', "errortitle": 'Sign Up failed'})))
             async def _():
-                yield SSE.merge_fragments(fragments=rendered_html_str, selector="#signuperrordiv", use_view_transition=True, merge_mode=FragmentMergeMode.OUTER)
+                yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
             return DatastarStreamingResponse(_())
     elif response.status_code == 422:
         templ = templates.get_template("snippets.html")
         rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"signuperrordiv", "signuperrormessage": 'Validation Error', "errortitle": 'Sign Up failed'})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, selector="#signuperrordiv", use_view_transition=True, merge_mode=FragmentMergeMode.OUTER)
+            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
         return DatastarStreamingResponse(_())
     print("Unknown return Code!!")
     return "Unknown return Code!!"
