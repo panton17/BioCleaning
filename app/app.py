@@ -128,7 +128,7 @@ async def login_validate(request: Request, email: Annotated[str, Form()], passwo
         async def _():
             yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
             time.sleep(3)
-            yield SSE.redirect("/authenticated-route")
+            yield SSE.redirect("/authenticated-route") # here I need something like data-on-click="@get('/authenticated-route')" but from the server
 
         streaming_response = DatastarStreamingResponse(_())
         streaming_response.headers['Set-Cookie'] = f"auth={cookie_value}; HttpOnly; Secure; Path=/"
