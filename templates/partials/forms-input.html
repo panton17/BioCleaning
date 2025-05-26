@@ -1,0 +1,93 @@
+<div>
+  <style>
+      me {
+          display: flex;
+          flex-direction: column-reverse;
+          padding-top: 94px;
+          padding-bottom: 20px;
+          flex-basis: 100%;
+      }
+
+      me .input-group__error {
+          color: #ae2300;
+          display: block;
+          position: relative;
+          visibility: hidden;
+          opacity: 0;
+          margin-left: 10px;
+          margin-top: 1px;
+          margin-bottom: -52px;
+          font-family: 'Noto Serif', serif;
+          font-size: 14px;
+          transition: all 0.3s ease-out;
+      }
+
+      me input {
+          font-family: 'Noto Sans', sans-serif;
+          font-size: 14px;
+          color: black;
+          height: 29px;
+          border: 0;
+          z-index: 1;
+          background-color: transparent;
+          border-bottom: 1px solid var(--color-input-lines);
+          font-size: 1.125rem;
+
+          &:focus {
+              outline: 0;
+              border-bottom: 1px solid var(--color-input-lines);
+
+              &+.input-label {
+                  font-family: 'Noto Serif', serif;
+                  font-style: italic;
+                  font-size: 14px;
+                  color: var(--color-input-lines);
+                  transform: translateY(-1.5rem);
+              }
+          }
+
+          &:valid {
+              border-bottom: 1px solid hsl(55, 96%, 38%);
+
+              &+.input-label {
+                  font-family: 'Noto Serif', serif;
+                  font-style: italic;
+                  font-size: 14px;
+                  color: var(--color-input-lines);
+                  transform: translateY(-1.5rem);
+              }
+          }
+
+          &:not(:placeholder-shown):invalid {
+              border-bottom: 1px solid #ff3300;
+
+              &+.input-label {
+                  font-family: 'Noto Serif', serif;
+                  font-style: italic;
+                  font-size: 14px;
+                  color: var(--color-input-lines);
+                  transform: translateY(-1.5rem);
+              }
+          }
+
+          &:not(:placeholder-shown):not(:focus):invalid~.input-group__error {
+              visibility: visible;
+              opacity: 1;
+          }
+      }
+  </style>
+  <input pattern="{{ pattern }}" placeholder="" type="{{ type }}" value="" name="{{ name }}" required />
+  <label class="input-label">
+    <style>
+        me {
+            color: black;
+            position: absolute;
+            transition: .15s ease;
+            margin-bottom: 4px;
+        }
+    </style>
+    {{ fieldtext }}
+  </label>
+
+  <span id="{{ idalwayschange }}-errordiv" class="input-group__error">{{ errormessage }}</span>
+</div>

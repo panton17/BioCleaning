@@ -1,0 +1,44 @@
+<button popovertarget="{{ idalwayschange }}" type="button">
+  <style>
+      me {
+          all: unset;
+          font-family: 'Noto Serif', serif;
+          font-size: 18px;
+          font-weight: 500;
+          background-color: transparent;
+          border: 1px solid var(--color-input-lines);
+          border-radius: 8px;
+          color: var(--color-input-lines);
+          width: 25px;
+          height: 25px;
+          margin-left: 8px;
+          text-align: center;
+          cursor: pointer;
+          transition: .25s ease;
+          margin-bottom: 20px;
+      }
+
+      me:hover {
+          background-color: var(--color-background-middle);
+          color: var(--color-text-bright);
+      }
+  </style>
+  i
+</button>
+<div popover id="{{ idalwayschange }}">
+  <style>
+      me {
+          width: 300px;
+          background-color: var(--color-background-dark);
+          color: var(--color-text-bright);
+          border: 1px solid var(--color-background-middle);
+          border-width: 1px;
+          border-radius: 16px;
+          padding: 38px 38px;
+          cursor: pointer;
+          text-align: center;
+          font-size: 1.16rem;
+      }
+  </style>
+  {{ infotext }}
+</div>

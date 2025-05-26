@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Muster{% endblock %}
+{% block content %}
+  <div>
+    <style>
+        me {
+            display: flex;
+            flex-direction: column;
+            width: auto;
+            max-width: 820px;
+            background-color: var(--color-background-bright);
+            border-radius: 6px;
+            padding-top: 46px;
+            padding-bottom: 46px;
+            padding-left: clamp(18px, 15%, 172px);
+            padding-right: clamp(18px, 15%, 172px);
+        }
+    </style>
+
+    <!-- TITLE SINGLE -->
+    <div>
+      <style>
+          me {
+              width: 100%;
+              text-align: center;
+              padding-bottom: 8px;
+          }
+
+          me div {
+              padding-bottom: 14px;
+              font-family: 'Noto Serif', serif;
+              font-size: 24px;
+              font-weight: 400;
+              font-stretch: semi-condensed;
+              font-style: italic;
+          }
+
+          me hr {
+              display: block;
+              height: 1px;
+              border: 0;
+              border-top: 1px solid #a8a8a8;
+              margin: 0;
+              padding: 0;
+          }
+      </style>
+      <div>Muster</div>
+      <hr />
+    </div>
+
+    <form>
+
+      <!-- INPUT WITH POPOVER -->
+      <div>
+        <style>
+            me {
+                display: flex;
+                align-items: end;
+            }
+        </style>
+        {{ render_partial('partials/forms-input.html', fieldtext='First Name', type = 'text', name="", pattern="[\s\S]*") }}
+        {{ render_partial('partials/forms-info-popover.html', id='1', infotext='3That’s not enough, as we also need some sort of “trigger” to make the popover, well, pop! We get another attribute that turns any button flavored button into that trigger.') }}
+      </div>
+
+      {{ render_partial('partials/forms-input.html', fieldtext='Email', type = 'email', name="", pattern="^[^@]+@[^@]+\.[^@]+$") }}
+      {{ render_partial('partials/forms-input.html', fieldtext='Engineer', type = 'password', name="", pattern="[\s\S]*") }}
+
+      <!-- SELECT WITH POPOVER -->
+      <div>
+        <style>
+            me {
+                display: flex;
+                align-items: end;
+            }
+        </style>
+        {{ render_partial('partials/forms-select.html', titledisabled='Select Default', optionslist=['option26', 'password', 'Engineer']) }}
+        {{ render_partial('partials/forms-info-popover.html', id='2', infotext='2That’s not enough, as we also need some sort of “trigger” to make the popover, well, pop! We get another attribute that turns any button flavored button into that trigger.') }}
+      </div>
+
+    </form>
+
+
+  </div>
+{% endblock content %}

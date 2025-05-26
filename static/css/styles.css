@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&family=Noto+Serif:wght@100..900&family=Noto+Sans+Mono:wght@100..900&family=Noto+Sans+Display:wght@100..900&display=swap');
+
+/* font-family: 'Noto Sans', sans-serif; */
+/* font-family: 'Noto Serif', serif; */
+
+/* font-style: italic; */
+/* font-style: normal; */
+
+/* The font-stretch property accepts values like
+ultra-condensed
+extra-condensed
+condensed
+semi-condensed
+normal
+semi-expanded
+expanded
+extra-expanded
+ultra-expanded
+*/
+
+/* Font Weight Values:
+100: Thin
+200: Extra Light
+300: Light
+400: Normal
+500: Medium
+600: Semi-Bold
+700: Bold
+800: Extra Bold
+900: Black
+*/
+
+:root {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+
+    /* PURPLE */
+    /* --color-background-dark: #663b18;
+    --color-background-middle: #e0dbcd;
+    --color-background-bright: #f6f5ee;
+    --color-text-dark: #7c3800;
+    --color-text-middle: #615637;
+    --color-text-bright: #f6e1c5;
+    --color-text-brighter: #f6e1c5;
+    --color-border-middle:rgba(0, 0, 0, 0.08);
+    --color-input-lines: #994500; */
+
+    /* ORANGE */
+    --color-background-dark: #472c07;
+    --color-background-middle: #d89c52;
+    --color-background-bright: #f6e1c5;
+    --color-text-dark: #8b4f06;
+    --color-text-middle: #945200;
+    --color-text-bright:rgb(222, 203, 177);
+    --color-text-brighter: #f6e1c5;
+    --color-border-middle: #e5ad63;
+    --color-input-lines: #d89c52;
+
+    /* BROWN */
+    /* --color-background-dark: #4a3f2c;
+    --color-background-middle: #b19c77;
+    --color-background-bright: #e9e3d8;
+    --color-text-dark: #6b4400;
+    --color-text-middle: #b19c77;
+    --color-text-bright: #d7d2c9;
+    --color-text-brighter: #e9e3d8;
+    --color-border-middle: #c6b18e;
+    --color-input-lines: #6b4400; */
+    }
+
+
+html, body {
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    font-size: 1.125rem;
+    background-color: var(--color-background-middle);
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active{
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    font-size: 1.125rem;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color:rgb(0, 0, 0);
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px rgba(35, 35, 35, 0);
+}
+
+.Site {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.container {
+    width: clamp(98%, 92%, 1200px);
+    margin: auto;
+    height: 100%;
+}
+
+hr.footer-hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 0;
+    padding: 0;
+    border-color: var(--color-text-dark);
+}
+
+a {
+    color: var(--color-text-dark);
+}
+
+.fa-square-facebook{
+    font-size: 22px;
+}
+.fa-linkedin{
+    font-size: 22px;
+}
+.fa-envelope{
+    font-size: 25px;
+}
+
+.navbarlogo {
+    padding-right: 10px;
+    width: 24px;
+    height: 24px;
+}
+
+.footerlogo {
+    padding-right: 10px;
+    width: 24px;
+    height: 24px;
+}
+
+.content-div{
+    width: auto;
+    max-width: 820px;
+    margin: 60px auto;
+    border-style: solid;
+    border-color: var(--color-border-middle);
+    border-width: 4px;
+    border-radius: 12px;
+    padding: 4px;
+    opacity: 1;
+    view-transition-name: slide-it;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+
+@keyframes fade-in {
+    from { opacity: 0; }
+}
+
+@keyframes fade-out {
+    to { opacity: 0; }
+}
+
+@keyframes slide-from-right {
+    from { transform: translateX(90px); }
+}
+
+@keyframes slide-to-left {
+    to { transform: translateX(-90px); }
+}
+
+::view-transition-old(slide-it) {
+    animation:
+    180ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+    600ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+}
+::view-transition-new(slide-it) {
+    animation:
+    420ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+    600ms cubic-bezier(.63,.7,.16,1.28) both slide-from-right;
+}
+
+::view-transition-old(fadein-only) {
+    animation: 200ms ease-out both fade-out;
+}
+::view-transition-new(fadein-only) {
+    animation: 300ms ease-out both fade-in;
+}
+
+.view-fadein-only {
+  view-transition-name: fadein-only;
+}
+
+[popover] {
+  transition: opacity 0.2s, transform 0.2s, display 0.2s allow-discrete;
+  opacity: 0;
+  transform: translateY(3rem);
+  &:popover-open {
+    opacity: 1;
+    transform: none;
+    @starting-style {
+      & {
+        opacity: 0;
+        transform: translateY(-1rem);
+      }
+    }
+  }
+}

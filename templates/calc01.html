@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Calc01{% endblock %}
+{% block content %}
+  <div id="content-div">
+
+    <!-- TITLE SINGLE -->
+    <div>
+      <style>
+          me {
+              width: 100%;
+              text-align: center;
+              padding-bottom: 8px;
+          }
+
+          me div {
+              padding-bottom: 14px;
+              font-family: 'Noto Serif', serif;
+              font-size: 24px;
+              font-weight: 400;
+              font-stretch: semi-condensed;
+              font-style: italic;
+          }
+
+          me hr {
+              display: block;
+              height: 1px;
+              border: 0;
+              border-top: 1px solid #a8a8a8;
+              margin: 0;
+              padding: 0;
+          }
+      </style>
+      <div>{{ useremail }}</div>
+      <hr />
+    </div>
+
+    <form data-signals="{users_submit_button_disable:false}" data-on-submit="$users_submit_button_disable = true;@post('/login_validate', {contentType: 'form'})">
+
+      <!-- INPUT WITH POPOVER -->
+      <div>
+        <style>
+            me {
+                display: flex;
+                align-items: end;
+            }
+        </style>
+        {{ render_partial('partials/forms-input.html', idalwayschange='firstcalc01', name='email', fieldtext='First Name', type = 'text', pattern="[\s\S]*", errormessage="Pattern not satisfied") }}
+        {{ render_partial('partials/forms-info-popover.html', idalwayschange='dfvd1', infotext='3That’s not enough, as we also need some sort of “trigger” to make the popover, well, pop! We get another attribute that turns any button flavored button into that trigger.') }}
+      </div>
+      {{ render_partial('partials/forms-input.html', idalwayschange='firstcalc02', name='Engineer', fieldtext='First Name', type = 'text', pattern="[\s\S]*", errormessage="Pattern not satisfied") }}
+      {{ render_partial('partials/forms-input.html', idalwayschange='firstcalc03', name='Engineer2', fieldtext='First Name', type = 'text', pattern="[\s\S]*", errormessage="Pattern not satisfied") }}
+      {{ render_partial('partials/forms-select.html', titledisabled='Select Default', optionslist=['option26', 'password', 'Engineer']) }}
+      <!-- SELECT WITH POPOVER -->
+      <div>
+        <style>
+            me {
+                display: flex;
+                align-items: end;
+            }
+        </style>
+        {{ render_partial('partials/forms-select.html', titledisabled='Select Default', optionslist=['option26', 'password', 'Engineer']) }}
+        {{ render_partial('partials/forms-info-popover.html', idalwayschange='6', infotext='2That’s not enough, as we also need some sort of “trigger” to make the popover, well, pop! We get another attribute that turns any button flavored button into that trigger.') }}
+      </div>
+
+    </form>
+
+  </div>
+{% endblock content %}
+
+
+{% block button %}
+  {% if useremail %}
+    <button id="id-logbutton" data-on-click="@get('/login_form')">
+      <style>
+          me {
+              font-family: 'Noto Sans', sans-serif;
+              font-size: 16px;
+              font-weight: 600;
+              font-stretch: condensed;
+              background-color: transparent;
+              color: var(--color-text-bright);
+              border: 1px solid var(--color-text-bright);
+              padding: 2px 14px;
+              cursor: pointer;
+              transition: .5s ease;
+              border-width: 1px;
+              border-radius: 6px;
+              margin-left: auto;
+          }
+
+          me:hover {
+              background-color: var(--color-background-bright);
+              color: var(--color-text-dark);
+          }
+      </style>
+      Log out
+    </button>
+  {% endif %}
+
+{% endblock button %}

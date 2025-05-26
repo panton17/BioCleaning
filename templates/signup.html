@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<div id="content-div">
+
+  <!-- TITLE SINGLE -->
+  <div>
+    <style>
+        me {
+            width: 100%;
+            text-align: center;
+            padding-bottom: 8px;
+        }
+
+        me div {
+            padding-bottom: 14px;
+            font-family: 'Noto Serif', serif;
+            font-size: 24px;
+            font-weight: 400;
+            font-stretch: semi-condensed;
+            font-style: italic;
+        }
+
+        me hr {
+            display: block;
+            height: 1px;
+            border: 0;
+            border-top: 1px solid #a8a8a8;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <div>Sign Up</div>
+    <hr />
+  </div>
+
+  <form data-signals="{users_submit_button_disable:false}" data-on-submit="$users_submit_button_disable = true;@post('/signup_validate', {contentType: 'form'})">
+
+    {{ render_partial('partials/forms-input.html', idalwayschange='signupemail', name='email', fieldtext='Email', type = 'email', pattern="^[^@]+@[^@]+\.[^@]+$", errormessage="Invalid email address") }}
+    {{ render_partial('partials/forms-input-password.html', idalwayschange='signuppass', name='password', fieldtext='Password') }}
+    {{ render_partial('partials/forms-input-password.html', idalwayschange='signuppassrepeat', name='passwordrepeat', fieldtext='Confirm Password') }}
+    <!-- SUBMIT BUTTON -->
+    <button type="submit" data-attr-disabled="$users_submit_button_disable">
+      <style>
+          me {
+              height: 40px;
+              margin-top: 3.6rem;
+              width: 100%;
+              display: block;
+              background-color: transparent;
+              color: var(--color-text-dark);
+              border: 1px solid var(--color-text-dark);
+              cursor: pointer;
+              transition: .5s ease;
+              border-width: 1px;
+              border-radius: 6px;
+              font-family: 'Noto Sans', sans-serif;
+              font-weight: 500;
+              font-size: 18px;
+              font-stretch: semi-condensed;
+              text-align: center;
+          }
+
+          me:hover {
+              background-color: var(--color-background-dark);
+              color: var(--color-text-bright);
+          }
+
+          me:disabled {
+              background-color: rgb(72, 72, 72);
+              opacity: 0.4;
+              padding: 0px 0px;
+          }
+
+          me:disabled .button-spinner {
+              display: inline;
+              margin-top: 4px;
+              margin-bottom: 0px;
+          }
+
+          me:disabled .button-text {
+              display: none;
+          }
+
+          me .button-spinner {
+              display: none;
+              width: 30px;
+              height: 30px;
+          }
+      </style>
+      <span class="button-text">Submit</span>
+      <img class="button-spinner"
+            src="{{ url_for('static', path='/images/tube-spinner.svg') }}"
+            alt="spinning..." />
+    </button>
+  </form>
+
+  <div id="signuperrordiv"></div>
+
+
+  <!-- Terms and Conditions -->
+  <div>
+    <style>
+        me {
+            margin-top: 32px;
+            text-align: center;
+            color: hsl(0, 0%, 22%);
+        }
+
+        me a {
+            color: var(--color-text-dark);
+            text-decoration: none;
+            font-weight: 400;
+            font-stretch: semi-condensed;
+        }
+
+        me a:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+    By signing up you are agreeing to our <a>Terms and Conditions</a>
+  </div>
+
+  <!-- Not registered yet? -->
+  <div>
+    <style>
+        me {
+            margin-top: 99px;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+
+        me a {
+            color: var(--color-text-dark);
+            text-decoration: none;
+            font-weight: 400;
+            font-stretch: semi-condensed;
+        }
+
+        me a:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+    Already have an account?
+    <a data-on-click="@get('/login_form')">Log in</a>
+  </div>
+
+</div>
+{% endblock content %}

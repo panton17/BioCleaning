@@ -1,0 +1,45 @@
+uv init
+
+The first time you run the add command, UV creates a new virtual environment in the current working directory and installs the specified dependencies.
+
+uv add fastapi fastapi-users[sqlalchemy,oauth] uvicorn[standard] aiosqlite Jinja2
+
+fastapi
+fastapi-users[sqlalchemy,oauth]
+uvicorn[standard]
+aiosqlite
+Jinja2
+jinja2-fragments
+jinja-partials
+python-multipart
+requests
+datastar-py
+
+uv add jinja2-fragments
+uv add jinja-partials
+uv add email-validator (pydantic mini package)
+uv add djlint
+uv add requests
+uv remove python-multipart
+uvicorn main:app --reload
+
+git remote add origin https://github.com/panton17/BioCleaning.git
+git branch -M main
+
+
+Change:
+yield SSE.merge_fragments(fragments=rendered_html_str, selector="#content-div", use_view_transition=True, merge_mode=FragmentMergeMode.OUTER)
+
+to
+yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
+
+
+Does that sound odd @Delaney ? If you drop an ID from an inner div and use merge mode Outer, then things are fine. Use Outer and have an ID on the element, and then things don't work.
+
+
+Hmm... That's interesting... But why are you doing that?
+Why not use the defaults?
+This is not HTMX
+
+
+

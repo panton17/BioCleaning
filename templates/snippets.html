@@ -1,0 +1,178 @@
+{% block signupfailed %}
+  <div id="{{ id }}" class="view-fadein-only" data-signals="{users_submit_button_disable:false}">
+    <style>
+        me {
+            margin-top: 46px;
+            display: flex;
+            flex-direction: column;
+            width: auto;
+            max-width: 820px;
+            background-color: #ff37000c;
+            border: 1px solid var(--color-background-middle);
+            border-radius: 6px;
+            padding-top: 26px;
+            padding-bottom: 26px;
+            padding-left: clamp(18px, 15%, 172px);
+            padding-right: clamp(18px, 15%, 172px);
+        }
+    </style>
+    <div>
+      <style>
+          me {
+              width: 100%;
+              text-align: center;
+              padding-bottom: 8px;
+          }
+
+          me div {
+              padding-bottom: 14px;
+              font-family: 'Noto Serif', serif;
+              font-size: 24px;
+              font-weight: 400;
+              font-stretch: semi-condensed;
+              font-style: italic;
+              color: #ae2300;
+          }
+
+          me hr {
+              border: none;
+              border-bottom: 1px solid var(--color-background-middle);
+          }
+      </style>
+      <div>{{ errortitle }}</div>
+      <hr />
+    </div>
+    <div>
+      <style>
+          me {
+              width: 100%;
+              text-align: center;
+              padding-bottom: 8px;
+              color: #641400;
+          }
+      </style>
+      {{ signuperrormessage }}
+    </div>
+  </div>
+{% endblock signupfailed %}
+
+{% block signupsuccess %}
+<div id="content-div">
+
+  <!-- TITLE SINGLE -->
+  <div>
+    <style>
+        me {
+            width: 100%;
+            text-align: center;
+            padding-bottom: 8px;
+        }
+
+        me div {
+            padding-bottom: 14px;
+            font-family: 'Noto Serif', serif;
+            font-size: 24px;
+            font-weight: 400;
+            font-stretch: semi-condensed;
+            font-style: italic;
+        }
+
+        me hr {
+            display: block;
+            height: 1px;
+            border: 0;
+            border-top: 1px solid #a8a8a8;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <div>Signup Successful!</div>
+    <hr />
+  </div>
+
+  <div>
+    <style>
+        me {
+            margin-top: 29px;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+
+        me a {
+            color: var(--color-text-dark);
+            text-decoration: none;
+            font-weight: 400;
+            font-stretch: semi-condensed;
+        }
+
+        me a:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+    You can now
+    <a data-on-click="@get('/login_form')">Log in</a>
+  </div>
+
+</div>
+{% endblock signupsuccess %}
+
+{% block loginsuccess %}
+<div id="content-div">
+
+  <!-- TITLE SINGLE -->
+  <div>
+    <style>
+        me {
+            width: 100%;
+            text-align: center;
+            padding-bottom: 8px;
+        }
+
+        me div {
+            padding-bottom: 14px;
+            font-family: 'Noto Serif', serif;
+            font-size: 24px;
+            font-weight: 400;
+            font-stretch: semi-condensed;
+            font-style: italic;
+        }
+
+        me hr {
+            display: block;
+            height: 1px;
+            border: 0;
+            border-top: 1px solid #a8a8a8;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <div>Login Successful!</div>
+    <hr />
+  </div>
+
+  <div>
+    <style>
+        me {
+            margin-top: 29px;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+
+        me a {
+            color: var(--color-text-dark);
+            text-decoration: none;
+            font-weight: 400;
+            font-stretch: semi-condensed;
+        }
+
+        me a:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+    Redirecting...
+  </div>
+
+</div>
+{% endblock loginsuccess %}
