@@ -263,7 +263,7 @@
                       padding-right: clamp(18px, 20%, 272px);
                   }
               </style>
-              <div id="content-div" data-view-transition>
+              <div id="content-div" data-view-transition="'content-div'">
                 {% block content %}
                 {% endblock %}
               </div>
@@ -273,26 +273,42 @@
           </div>
 
           <script>
-            document.addEventListener("ds:will-replace", () => {
-              const container = document.querySelector(".content-div");
-              if (!container) return;
-              container.style.height = container.offsetHeight + "px";
-            });
+            function animateHeightChange(oldEl, newEl) {
+              const container = oldEl.closest('.content-div');
 
-            document.addEventListener("ds:did-replace", () => {
-              const container = document.querySelector(".content-div");
               if (!container) return;
 
-              // Wait a frame so the DOM updates
+              // Set current height
+              const startHeight = container.offsetHeight;
+
+              // Replace old content
+              oldEl.replaceWith(newEl);
+
+              // Temporarily set the new height so it animates
+              const endHeight = container.offsetHeight;
+
+              container.style.height = startHeight + 'px';
+
               requestAnimationFrame(() => {
-                const newHeight = container.scrollHeight;
-                container.style.height = newHeight + "px";
+                container.style.height = endHeight + 'px';
 
-                container.addEventListener("transitionend", function handler() {
-                  container.style.height = "auto";
-                  container.removeEventListener("transitionend", handler);
+                container.addEventListener('transitionend', function handler() {
+                  container.style.height = 'auto';
+                  container.removeEventListener('transitionend', handler);
                 });
               });
+            }
+
+            document.addEventListener("ds:will-replace", (e) => {
+              const oldEl = e.detail.target;
+              const tempDiv = document.createElement("div");
+              tempDiv.innerHTML = e.detail.fragmentHTML;
+              const newEl = tempDiv.querySelector('#content-div');
+
+              if (newEl) {
+                e.preventDefault(); // cancel Datastar’s default replace
+                animateHeightChange(oldEl, newEl);
+              }
             });
           </script>
 
