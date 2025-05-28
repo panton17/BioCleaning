@@ -159,9 +159,9 @@ a {
     border-radius: 12px;
     padding: 4px;
 
-    overflow: hidden; /* Ensure content doesn’t overflow */
-    max-height: 0; /* Initially hidden */
-    transition: max-height 0.5s ease-in-out; /* Transition for height */
+    transition: height 1.3s ease;
+    overflow: hidden;
+
 
     /* @starting-style {
         height: 0px;
@@ -173,6 +173,9 @@ a {
     /* transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1); */
 }
 
+#content-div[data-view-transition] {
+  view-transition-name: content-div;
+}
 .content-div.show {
     max-height: 1000px; /* Set a max-height value that's large enough for most content */
 }

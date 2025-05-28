@@ -247,7 +247,7 @@
             }
         </style>
         <div class="container">
-          <div class="content-div">
+          <div id="content-wrapper" class="content-div">
             <div>
               <style>
                   me {
@@ -263,7 +263,7 @@
                       padding-right: clamp(18px, 20%, 272px);
                   }
               </style>
-              <div id="content-div">
+              <div id="content-div" data-view-transition>
                 {% block content %}
                 {% endblock %}
               </div>
@@ -271,6 +271,30 @@
             </div>
 
           </div>
+
+          <script>
+            document.addEventListener("ds:will-replace", () => {
+              const container = document.querySelector(".content-div");
+              if (!container) return;
+              container.style.height = container.offsetHeight + "px";
+            });
+
+            document.addEventListener("ds:did-replace", () => {
+              const container = document.querySelector(".content-div");
+              if (!container) return;
+
+              // Wait a frame so the DOM updates
+              requestAnimationFrame(() => {
+                const newHeight = container.scrollHeight;
+                container.style.height = newHeight + "px";
+
+                container.addEventListener("transitionend", function handler() {
+                  container.style.height = "auto";
+                  container.removeEventListener("transitionend", handler);
+                });
+              });
+            });
+          </script>
 
         </div>
       </main>
