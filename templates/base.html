@@ -273,42 +273,32 @@
           </div>
 
           <script>
-            function animateHeightChange(oldEl, newEl) {
-              const container = oldEl.closest('.content-div');
+            let previousHeight = 0;
+            const container = document.querySelector('.content-div');
 
+            document.addEventListener("ds:will-replace", e => {
+              if (!container) return;
+              previousHeight = container.offsetHeight;
+              container.style.height = previousHeight + "px";
+              container.style.overflow = "hidden";
+            });
+
+            document.addEventListener("ds:did-replace", e => {
               if (!container) return;
 
-              // Set current height
-              const startHeight = container.offsetHeight;
+              // Force reflow before applying new height
+              void container.offsetHeight;
 
-              // Replace old content
-              oldEl.replaceWith(newEl);
+              const newHeight = container.scrollHeight;
+              container.style.transition = "height 300ms ease";
+              container.style.height = newHeight + "px";
 
-              // Temporarily set the new height so it animates
-              const endHeight = container.offsetHeight;
-
-              container.style.height = startHeight + 'px';
-
-              requestAnimationFrame(() => {
-                container.style.height = endHeight + 'px';
-
-                container.addEventListener('transitionend', function handler() {
-                  container.style.height = 'auto';
-                  container.removeEventListener('transitionend', handler);
-                });
+              container.addEventListener('transitionend', function handler() {
+                container.style.height = "auto";
+                container.style.overflow = "";
+                container.style.transition = "";
+                container.removeEventListener('transitionend', handler);
               });
-            }
-
-            document.addEventListener("ds:will-replace", (e) => {
-              const oldEl = e.detail.target;
-              const tempDiv = document.createElement("div");
-              tempDiv.innerHTML = e.detail.fragmentHTML;
-              const newEl = tempDiv.querySelector('#content-div');
-
-              if (newEl) {
-                e.preventDefault(); // cancel Datastar’s default replace
-                animateHeightChange(oldEl, newEl);
-              }
             });
           </script>
 
