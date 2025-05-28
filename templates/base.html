@@ -273,32 +273,32 @@
           </div>
 
           <script>
-            let previousHeight = 0;
-
-            document.addEventListener("ds:will-replace", e => {
-              const container = document.querySelector('.content-div');
+            document.addEventListener("ds:will-replace", () => {
+              const container = document.querySelector(".content-div");
               if (!container) return;
-              previousHeight = container.offsetHeight;
-              container.style.height = previousHeight + "px";
+
+              // Fix current height before replacement
+              container.style.height = container.offsetHeight + "px";
               container.style.overflow = "hidden";
               container.style.transition = "height 300ms ease";
             });
 
-            document.addEventListener("ds:did-replace", e => {
-              const container = document.querySelector('.content-div');
+            document.addEventListener("ds:did-replace", () => {
+              const container = document.querySelector(".content-div");
               if (!container) return;
 
-              // Force reflow
+              // Force reflow to apply previous height fix
               void container.offsetHeight;
 
-              const newHeight = container.scrollHeight;
-              container.style.height = newHeight + "px";
+              // Animate to new height
+              container.style.height = container.scrollHeight + "px";
 
-              container.addEventListener('transitionend', function handler() {
+              container.addEventListener("transitionend", function handler() {
+                // Reset styles after animation
                 container.style.height = "auto";
                 container.style.overflow = "";
                 container.style.transition = "";
-                container.removeEventListener('transitionend', handler);
+                container.removeEventListener("transitionend", handler);
               });
             });
           </script>
