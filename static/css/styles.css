@@ -31,6 +31,7 @@ ultra-expanded
 */
 
 :root {
+    interpolate-size: allow-keywords;
     font-family: 'Noto Sans', sans-serif;
     font-size: 16px;
     font-weight: 300;
@@ -157,15 +158,32 @@ a {
     border-width: 4px;
     border-radius: 12px;
     padding: 4px;
-    opacity: 1;
-    view-transition-name: slide-it;
+
+    overflow: hidden; /* Ensure content doesn’t overflow */
+    max-height: 0; /* Initially hidden */
+    transition: max-height 0.5s ease-in-out; /* Transition for height */
+
+    /* @starting-style {
+        height: 0px;
+    }
+    height: calc-size(auto);
+    transition: height 1s; */
+
+    /* view-transition-name: slide-it; */
+    /* transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1); */
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.content-div.show {
+    max-height: 1000px; /* Set a max-height value that's large enough for most content */
 }
 
+@view-transition {
+    navigation: auto;
+}
+
+@keyframes change-height {
+    to { height: calc-size(auto); }
+}
 
 @keyframes fade-in {
     from { opacity: 0; }
@@ -198,10 +216,10 @@ a {
     animation: 200ms ease-out both fade-out;
 }
 ::view-transition-new(fadein-only) {
-    animation: 300ms ease-out both fade-in;
+    animation: 600ms ease-out both fade-in;
 }
 
-.view-fadein-only {
+#loginerrordiv, #signuperrordiv {
   view-transition-name: fadein-only;
 }
 
@@ -220,3 +238,5 @@ a {
     }
   }
 }
+
+
