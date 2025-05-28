@@ -274,23 +274,24 @@
 
           <script>
             let previousHeight = 0;
-            const container = document.querySelector('.content-div');
 
             document.addEventListener("ds:will-replace", e => {
+              const container = document.querySelector('.content-div');
               if (!container) return;
               previousHeight = container.offsetHeight;
               container.style.height = previousHeight + "px";
               container.style.overflow = "hidden";
+              container.style.transition = "height 300ms ease";
             });
 
             document.addEventListener("ds:did-replace", e => {
+              const container = document.querySelector('.content-div');
               if (!container) return;
 
-              // Force reflow before applying new height
+              // Force reflow
               void container.offsetHeight;
 
               const newHeight = container.scrollHeight;
-              container.style.transition = "height 300ms ease";
               container.style.height = newHeight + "px";
 
               container.addEventListener('transitionend', function handler() {
