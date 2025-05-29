@@ -208,7 +208,7 @@
 
               </div>
               <div>
-                <button onclick='window.location.href = "/login_form"'>
+                <button type="button" data-ajax data-href="/login_form">
                   <style>
                       me {
                           font-family: 'Noto Sans', sans-serif;
@@ -269,36 +269,7 @@
               </div>
             </div>
           </div>
-          <script>
-            document.addEventListener("ds:will-replace", () => {
-              const container = document.querySelector(".content-div");
-              if (!container) return;
 
-              // Fix current height before replacement
-              container.style.height = container.offsetHeight + "px";
-              container.style.overflow = "hidden";
-              container.style.transition = "height 300ms ease";
-            });
-
-            document.addEventListener("ds:did-replace", () => {
-              const container = document.querySelector(".content-div");
-              if (!container) return;
-
-              // Force reflow to apply previous height fix
-              void container.offsetHeight;
-
-              // Animate to new height
-              container.style.height = container.scrollHeight + "px";
-
-              container.addEventListener("transitionend", function handler() {
-                // Reset styles after animation
-                container.style.height = "auto";
-                container.style.overflow = "";
-                container.style.transition = "";
-                container.removeEventListener("transitionend", handler);
-              });
-            });
-          </script>
         </div>
       </main>
 
@@ -360,6 +331,49 @@
         </div>
       </div>
     </div>
+
+    <script>
+      async function fetchAndAnimate(url) {
+        const container = document.getElementById("content-div");
+
+        const oldHeight = container.offsetHeight;
+
+        const response = await fetch(url, {
+          headers: { "X-Requested-With": "XMLHttpRequest" }
+        });
+
+        const newHTML = await response.text();
+
+        const temp = document.createElement("div");
+        temp.style.visibility = "hidden";
+        temp.style.position = "absolute";
+        temp.innerHTML = newHTML;
+        document.body.appendChild(temp);
+
+        const newHeight = temp.offsetHeight;
+        document.body.removeChild(temp);
+
+        container.style.height = oldHeight + "px";
+        container.innerHTML = newHTML;
+        requestAnimationFrame(() => {
+          container.style.transition = "height 300ms ease";
+          container.style.height = newHeight + "px";
+        });
+
+        setTimeout(() => {
+          container.style.height = "";
+          container.style.transition = "";
+        }, 300);
+      }
+
+      document.addEventListener("click", function (e) {
+        const el = e.target.closest("a[data-ajax], button[data-ajax]");
+        if (!el) return;
+        e.preventDefault();
+        const url = el.tagName === "BUTTON" ? el.dataset.href : el.href;
+        fetchAndAnimate(url);
+      });
+    </script>
 
   </body>
 </html>

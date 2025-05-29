@@ -45,6 +45,7 @@ templates = Jinja2Blocks(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 jinja_partials.register_starlette_extensions(templates)
 
+
 rendered_html_str:str = ""
 
 @app.get("/", response_class=HTMLResponse)
@@ -78,12 +79,21 @@ async def logout(request: Request):
         )
     return "Unknown return Code!!"
 
-@app.get("/login_form")
-def login_form(request: Request):
-    return templates.TemplateResponse(
-        "login.html",
-        {"request": request}
-    )
+# @app.get("/login_form")
+# def login_form(request: Request):
+#     return templates.TemplateResponse(
+#         "login.html",
+#         {"request": request}
+#     )
+
+def is_fragment(request: Request) -> bool:
+    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
+
+@app.get("/login_form", response_class=HTMLResponse)
+async def login(request: Request):
+    if is_fragment(request):
+        return templates.TemplateResponse("login.html", {"request": request}, block_name="content")
+    return templates.TemplateResponse("login.html", {"request": request})
 
 @app.post("/login_validate")
 async def login_validate(request: Request, email: Annotated[str, Form()], password: Annotated[str, Form()]):

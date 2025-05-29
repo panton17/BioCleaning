@@ -158,9 +158,12 @@ a {
     border-width: 4px;
     border-radius: 12px;
     padding: 4px;
-    overflow: hidden; /* fallback */
-    transition: height 300ms ease; /* fallback */
     /* view-transition-name: slide-it; */
+}
+
+#content-div {
+    overflow: hidden;
+    transition: height 300ms ease;
 }
 
 @keyframes fadeIn {
