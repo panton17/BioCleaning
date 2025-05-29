@@ -161,10 +161,16 @@ a {
     /* view-transition-name: slide-it; */
 }
 
-#content-div {
+#content-wrapper {
+  view-transition-name: content-wrapper;
+  overflow: hidden;
+  /* Prevents layout shifts during animation */
+}
+
+/* #content-div {
     overflow: hidden;
     transition: height 300ms ease;
-}
+} */
 
 @keyframes fadeIn {
     to {
@@ -172,13 +178,11 @@ a {
     }
 }
 
-@view-transition {
+/* @view-transition {
     navigation: auto;
-}
+} */
 
-@keyframes change-height {
-    to { height: calc-size(auto); }
-}
+
 
 @keyframes fade-in {
     from { opacity: 0; }

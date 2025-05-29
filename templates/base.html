@@ -248,7 +248,7 @@
         </style>
         <div class="container">
           <div class="content-div">
-            <div id="content-anim-wrapper">
+            <div id="content-wrapper">
               <style>
                   me {
                       display: flex;
@@ -333,65 +333,48 @@
     </div>
 
     <script>
-      async function fetchAndAnimate(url) {
-        const wrapper = document.getElementById("content-anim-wrapper");
-        const contentDiv = document.getElementById("content-div");
+    async function navigateWithViewTransition(url) {
+      const wrapper = document.getElementById("content-wrapper");
+      const contentDiv = document.getElementById("content-div");
 
-        const startHeight = wrapper.offsetHeight;
+      const oldHeight = wrapper.offsetHeight;
 
-        // Fetch new HTML fragment
+      // Start the transition
+      const transition = document.startViewTransition(async () => {
+        // Fetch the new fragment (just the inner content-div)
         const response = await fetch(url, {
-          headers: { "X-Requested-With": "XMLHttpRequest" }
+          headers: { "X-Requested-With": "XMLHttpRequest" },
         });
         const html = await response.text();
 
-        // Extract new content
         const temp = document.createElement("div");
         temp.innerHTML = html;
-        const newContent = temp.querySelector("#content-div")?.innerHTML;
+        const newFragment = temp.querySelector("#content-div");
+        if (!newFragment) return;
 
-        if (!newContent) {
-          console.error("New #content-div not found.");
-          return;
-        }
-
-        // Set wrapper to fixed height before content change
-        wrapper.style.height = `${startHeight}px`;
-        wrapper.style.overflow = "hidden";
-
-        // Replace content immediately
-        contentDiv.innerHTML = newContent;
-
-        // Force reflow
-        wrapper.getBoundingClientRect();
-
-        // Measure new height
-        const endHeight = wrapper.scrollHeight;
-
-        // Animate to new height
-        wrapper.style.transition = "height 300ms ease";
-        wrapper.style.height = `${endHeight}px`;
-
-        // After animation ends, clean up
-        wrapper.addEventListener(
-          "transitionend",
-          () => {
-            wrapper.style.height = "";
-            wrapper.style.transition = "";
-            wrapper.style.overflow = "";
-          },
-          { once: true }
-        );
-      }
-
-      // Button click delegation
-      document.addEventListener("click", (e) => {
-        const btn = e.target.closest("button[data-ajax]");
-        if (btn) {
-          e.preventDefault();
-          fetchAndAnimate(btn.dataset.href);
-        }
+        // Replace content
+        contentDiv.innerHTML = newFragment.innerHTML;
       });
+
+      transition.ready.then(() => {
+        const newHeight = wrapper.offsetHeight;
+        const animation = wrapper.animate(
+          [
+            { height: oldHeight + "px" },
+            { height: newHeight + "px" }
+          ],
+          {
+            duration: 400,
+            easing: "ease-in-out",
+            fill: "forwards"
+          }
+        );
+
+        animation.finished.then(() => {
+          wrapper.style.height = ""; // Reset inline height
+        });
+      });
+    }
     </script>
 
   </body>
