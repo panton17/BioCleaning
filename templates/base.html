@@ -339,22 +339,27 @@
 
         const startHeight = wrapper.offsetHeight;
 
-        // Fetch new fragment
+        // Fetch the new content
         const response = await fetch(url, {
-          headers: { "X-Requested-With": "XMLHttpRequest" },
+          headers: { "X-Requested-With": "XMLHttpRequest" }
         });
-        const newHTML = await response.text();
+        const html = await response.text();
 
-        // Create temp container to extract inner content and measure height
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = newHTML;
-        const newContent = tempDiv.querySelector("#content-div")?.innerHTML || newHTML;
+        // Create a temp node to extract the future #content-div contents
+        const temp = document.createElement("div");
+        temp.innerHTML = html;
+        const newInner = temp.querySelector("#content-div")?.innerHTML;
 
-        // Temporarily inject new content for height measurement
+        if (!newInner) {
+          console.error("Could not find #content-div in response.");
+          return;
+        }
+
+        // Inject new content into a hidden clone (for measurement only)
         const clone = contentDiv.cloneNode();
-        clone.innerHTML = newContent;
-        clone.style.position = "absolute";
+        clone.innerHTML = newInner;
         clone.style.visibility = "hidden";
+        clone.style.position = "absolute";
         clone.style.pointerEvents = "none";
         clone.style.width = wrapper.offsetWidth + "px";
         document.body.appendChild(clone);
@@ -362,33 +367,35 @@
         const endHeight = clone.offsetHeight;
         document.body.removeChild(clone);
 
-        // Now update content BEFORE animating
-        contentDiv.innerHTML = newContent;
-
+        // Prepare wrapper for animation
         wrapper.style.height = startHeight + "px";
-        wrapper.style.transition = "height 300ms ease";
         wrapper.style.overflow = "hidden";
+        wrapper.style.transition = "height 300ms ease";
 
-        // Force reflow before applying new height
-        requestAnimationFrame(() => {
-          wrapper.style.height = endHeight + "px";
+        // Trigger a reflow to make sure the height is "locked"
+        wrapper.offsetHeight;
 
-          wrapper.addEventListener("transitionend", function handler() {
-            wrapper.removeEventListener("transitionend", handler);
-            wrapper.style.height = "";
-            wrapper.style.transition = "";
-            wrapper.style.overflow = "";
-          }, { once: true });
-        });
+        // Start the height animation
+        wrapper.style.height = endHeight + "px";
+
+        // Replace content at the same time (new content visible during animation)
+        contentDiv.innerHTML = newInner;
+
+        wrapper.addEventListener("transitionend", function handler() {
+          wrapper.removeEventListener("transitionend", handler);
+          wrapper.style.height = "";
+          wrapper.style.transition = "";
+          wrapper.style.overflow = "";
+        }, { once: true });
       }
 
-      // Intercept navigation
+      // Event delegation for buttons
       document.addEventListener("click", function (e) {
-        const el = e.target.closest("button[data-ajax]");
-        if (!el) return;
-        e.preventDefault();
-        const url = el.dataset.href;
-        fetchAndAnimate(url);
+        const button = e.target.closest("button[data-ajax]");
+        if (button) {
+          e.preventDefault();
+          fetchAndAnimate(button.dataset.href);
+        }
       });
     </script>
 
