@@ -355,44 +355,36 @@
           return;
         }
 
-        // Create offscreen measurement clone
-        const clone = contentDiv.cloneNode();
-        clone.innerHTML = newContent;
-        clone.style.visibility = "hidden";
-        clone.style.position = "absolute";
-        clone.style.pointerEvents = "none";
-        clone.style.width = wrapper.offsetWidth + "px";
-        document.body.appendChild(clone);
-
-        const endHeight = clone.offsetHeight;
-        document.body.removeChild(clone);
-
-        // Freeze current height
+        // Set wrapper to fixed height before content change
         wrapper.style.height = `${startHeight}px`;
         wrapper.style.overflow = "hidden";
-        wrapper.style.transition = "height 300ms ease";
+
+        // Replace content immediately
+        contentDiv.innerHTML = newContent;
 
         // Force reflow
         wrapper.getBoundingClientRect();
 
-        // Start animation
+        // Measure new height
+        const endHeight = wrapper.scrollHeight;
+
+        // Animate to new height
+        wrapper.style.transition = "height 300ms ease";
         wrapper.style.height = `${endHeight}px`;
 
-        // Wait for animation, then replace content
+        // After animation ends, clean up
         wrapper.addEventListener(
           "transitionend",
           () => {
             wrapper.style.height = "";
             wrapper.style.transition = "";
             wrapper.style.overflow = "";
-
-            contentDiv.innerHTML = newContent;
           },
           { once: true }
         );
       }
 
-      // Delegate AJAX buttons
+      // Button click delegation
       document.addEventListener("click", (e) => {
         const btn = e.target.closest("button[data-ajax]");
         if (btn) {
