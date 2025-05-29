@@ -248,7 +248,7 @@
         </style>
         <div class="container">
           <div class="content-div">
-            <div>
+            <div id="content-anim-wrapper">
               <style>
                   me {
                       display: flex;
@@ -334,53 +334,54 @@
 
     <script>
       async function fetchAndAnimate(url) {
+        const wrapper = document.getElementById("content-anim-wrapper");
         const container = document.getElementById("content-div");
 
         // 1. Measure current height
-        const startHeight = container.offsetHeight;
+        const startHeight = wrapper.offsetHeight;
 
         // 2. Fetch new content
         const response = await fetch(url, {
-          headers: { "X-Requested-With": "XMLHttpRequest" }
+          headers: { "X-Requested-With": "XMLHttpRequest" },
         });
         const newHTML = await response.text();
 
-        // 3. Create off-DOM element to measure new height
-        const temp = document.createElement("div");
-        temp.style.position = "absolute";
-        temp.style.visibility = "hidden";
-        temp.style.pointerEvents = "none";
-        temp.style.width = container.offsetWidth + "px";
-        temp.innerHTML = newHTML;
-        document.body.appendChild(temp);
-        const endHeight = temp.offsetHeight;
-        document.body.removeChild(temp);
+        // 3. Create temp DOM to measure height
+        const tempWrapper = document.createElement("div");
+        tempWrapper.style.position = "absolute";
+        tempWrapper.style.visibility = "hidden";
+        tempWrapper.style.pointerEvents = "none";
+        tempWrapper.style.width = wrapper.offsetWidth + "px";
+        tempWrapper.innerHTML = `<div id="temp-content">${newHTML}</div>`;
+        document.body.appendChild(tempWrapper);
 
-        // 4. Lock current height
-        container.style.height = startHeight + "px";
-        container.style.overflow = "hidden";
-        container.style.transition = "height 300ms ease";
+        const endHeight = tempWrapper.offsetHeight;
+        document.body.removeChild(tempWrapper);
 
-        // 5. Wait for next paint
+        // 4. Lock wrapper height
+        wrapper.style.height = startHeight + "px";
+        wrapper.style.transition = "height 300ms ease";
+        wrapper.style.overflow = "hidden";
+
+        // 5. Start transition
         requestAnimationFrame(() => {
-          container.style.height = endHeight + "px";
+          wrapper.style.height = endHeight + "px";
 
-          // 6. On transition end, THEN replace content
-          container.addEventListener("transitionend", function handler() {
-            container.removeEventListener("transitionend", handler);
+          wrapper.addEventListener("transitionend", function handler() {
+            wrapper.removeEventListener("transitionend", handler);
 
-            // Replace inner content
+            // Replace content inside #content-div
             container.innerHTML = newHTML;
 
-            // Clear styles
-            container.style.height = "";
-            container.style.overflow = "";
-            container.style.transition = "";
+            // Clean up
+            wrapper.style.height = "";
+            wrapper.style.transition = "";
+            wrapper.style.overflow = "";
           }, { once: true });
         });
       }
 
-      // 7. Attach to buttons/links
+      // Intercept buttons/links
       document.addEventListener("click", function (e) {
         const el = e.target.closest("a[data-ajax], button[data-ajax]");
         if (!el) return;
