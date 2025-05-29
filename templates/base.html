@@ -336,36 +336,49 @@
       async function fetchAndAnimate(url) {
         const container = document.getElementById("content-div");
 
-        const oldHeight = container.offsetHeight;
+        // Step 1: Measure current height
+        const startHeight = container.offsetHeight;
 
+        // Step 2: Fetch new content
         const response = await fetch(url, {
-          headers: { "X-Requested-With": "XMLHttpRequest" }
+          headers: { "X-Requested-With": "XMLHttpRequest" },
         });
-
         const newHTML = await response.text();
 
+        // Step 3: Create a temporary clone to measure new height
         const temp = document.createElement("div");
-        temp.style.visibility = "hidden";
         temp.style.position = "absolute";
+        temp.style.visibility = "hidden";
+        temp.style.pointerEvents = "none";
+        temp.style.width = container.offsetWidth + "px";
         temp.innerHTML = newHTML;
         document.body.appendChild(temp);
-
-        const newHeight = temp.offsetHeight;
+        const endHeight = temp.offsetHeight;
         document.body.removeChild(temp);
 
-        container.style.height = oldHeight + "px";
-        container.innerHTML = newHTML;
-        requestAnimationFrame(() => {
-          container.style.transition = "height 300ms ease";
-          container.style.height = newHeight + "px";
-        });
+        // Step 4: Freeze height and enable transition
+        container.style.height = startHeight + "px";
+        container.style.transition = "height 300ms ease";
+        container.style.overflow = "hidden";
 
-        setTimeout(() => {
-          container.style.height = "";
-          container.style.transition = "";
-        }, 300);
+        // Step 5: Let the browser flush styles
+        requestAnimationFrame(() => {
+          container.style.height = endHeight + "px";
+
+          // Step 6: Wait for transition to finish
+          container.addEventListener("transitionend", function handler() {
+            container.removeEventListener("transitionend", handler);
+
+            // Step 7: Replace content and clean up
+            container.innerHTML = newHTML;
+            container.style.height = "";
+            container.style.transition = "";
+            container.style.overflow = "";
+          }, { once: true });
+        });
       }
 
+      // Bind to links or buttons with data-ajax
       document.addEventListener("click", function (e) {
         const el = e.target.closest("a[data-ajax], button[data-ajax]");
         if (!el) return;
