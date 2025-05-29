@@ -345,48 +345,47 @@
         });
         const html = await response.text();
 
-        // Create a hidden staging area
-        const temp = document.createElement("div");
-        temp.style.visibility = "hidden";
-        temp.style.position = "absolute";
-        temp.style.pointerEvents = "none";
-        temp.style.width = wrapper.offsetWidth + "px"; // constrain width
-        temp.innerHTML = html;
+        // Inject HTML into a hidden container to measure
+        const staging = document.createElement("div");
+        staging.style.visibility = "hidden";
+        staging.style.position = "absolute";
+        staging.style.pointerEvents = "none";
+        staging.style.width = wrapper.offsetWidth + "px";
+        staging.innerHTML = html;
 
-        const newContentDiv = temp.querySelector("#content-div");
-        if (!newContentDiv) return;
+        document.body.appendChild(staging);
 
-        document.body.appendChild(temp);
+        // Wait for layout (fonts, images, etc.)
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
-        // Wait for layout: force image/font layout before measuring
-        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const newContent = staging.querySelector("#content-div");
+        const newHeight = newContent.offsetHeight;
 
-        const newHeight = newContentDiv.offsetHeight;
+        document.body.removeChild(staging);
 
-        // Cleanup
-        document.body.removeChild(temp);
+        // Lock wrapper height to old height to prevent collapse during transition
+        wrapper.style.height = oldHeight + "px";
+        wrapper.style.overflow = "hidden";
 
-        // Start ViewTransition
+        // Start transition
         const transition = document.startViewTransition(() => {
-          contentDiv.innerHTML = newContentDiv.innerHTML;
+          contentDiv.innerHTML = newContent.innerHTML;
         });
 
         transition.ready.then(() => {
-          // Animate wrapper height
-          const animation = wrapper.animate(
-            [
-              { height: oldHeight + "px" },
-              { height: newHeight + "px" }
-            ],
-            {
-              duration: 400,
-              easing: "ease-in-out",
-              fill: "forwards"
-            }
-          );
+          // Animate height
+          const animation = wrapper.animate([
+            { height: oldHeight + "px" },
+            { height: newHeight + "px" }
+          ], {
+            duration: 400,
+            easing: "ease-in-out",
+            fill: "forwards"
+          });
 
           animation.finished.then(() => {
             wrapper.style.height = "";
+            wrapper.style.overflow = "";
           });
         });
       }
