@@ -158,6 +158,15 @@ a {
     border-width: 4px;
     border-radius: 12px;
     padding: 4px;
+    view-transition-name: slide-it;
+}
+
+.content-container {
+  overflow: hidden;
+}
+
+.content-wrapper {
+  transition: height 0.5s ease;
 }
 
 @keyframes fadeIn {
@@ -165,6 +174,12 @@ a {
     opacity: 1;
     }
 }
+
+/* @view-transition {
+    navigation: auto;
+} */
+
+
 
 @keyframes fade-in {
     from { opacity: 0; }
