@@ -339,25 +339,25 @@
 
         const startHeight = wrapper.offsetHeight;
 
-        // Fetch the new content
+        // Fetch new HTML fragment
         const response = await fetch(url, {
           headers: { "X-Requested-With": "XMLHttpRequest" }
         });
         const html = await response.text();
 
-        // Create a temp node to extract the future #content-div contents
+        // Extract new content
         const temp = document.createElement("div");
         temp.innerHTML = html;
-        const newInner = temp.querySelector("#content-div")?.innerHTML;
+        const newContent = temp.querySelector("#content-div")?.innerHTML;
 
-        if (!newInner) {
-          console.error("Could not find #content-div in response.");
+        if (!newContent) {
+          console.error("New #content-div not found.");
           return;
         }
 
-        // Inject new content into a hidden clone (for measurement only)
+        // Create offscreen measurement clone
         const clone = contentDiv.cloneNode();
-        clone.innerHTML = newInner;
+        clone.innerHTML = newContent;
         clone.style.visibility = "hidden";
         clone.style.position = "absolute";
         clone.style.pointerEvents = "none";
@@ -367,34 +367,37 @@
         const endHeight = clone.offsetHeight;
         document.body.removeChild(clone);
 
-        // Prepare wrapper for animation
-        wrapper.style.height = startHeight + "px";
+        // Freeze current height
+        wrapper.style.height = `${startHeight}px`;
         wrapper.style.overflow = "hidden";
         wrapper.style.transition = "height 300ms ease";
 
-        // Trigger a reflow to make sure the height is "locked"
-        wrapper.offsetHeight;
+        // Force reflow
+        wrapper.getBoundingClientRect();
 
-        // Start the height animation
-        wrapper.style.height = endHeight + "px";
+        // Start animation
+        wrapper.style.height = `${endHeight}px`;
 
-        // Replace content at the same time (new content visible during animation)
-        contentDiv.innerHTML = newInner;
+        // Wait for animation, then replace content
+        wrapper.addEventListener(
+          "transitionend",
+          () => {
+            wrapper.style.height = "";
+            wrapper.style.transition = "";
+            wrapper.style.overflow = "";
 
-        wrapper.addEventListener("transitionend", function handler() {
-          wrapper.removeEventListener("transitionend", handler);
-          wrapper.style.height = "";
-          wrapper.style.transition = "";
-          wrapper.style.overflow = "";
-        }, { once: true });
+            contentDiv.innerHTML = newContent;
+          },
+          { once: true }
+        );
       }
 
-      // Event delegation for buttons
-      document.addEventListener("click", function (e) {
-        const button = e.target.closest("button[data-ajax]");
-        if (button) {
+      // Delegate AJAX buttons
+      document.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-ajax]");
+        if (btn) {
           e.preventDefault();
-          fetchAndAnimate(button.dataset.href);
+          fetchAndAnimate(btn.dataset.href);
         }
       });
     </script>
