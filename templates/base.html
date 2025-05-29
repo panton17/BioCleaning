@@ -208,7 +208,7 @@
 
               </div>
               <div>
-                <button onclick="navigateWithViewTransition('/login_form')">
+                <button onclick="location.href='/login_form'">
                   <style>
                       me {
                           font-family: 'Noto Sans', sans-serif;
@@ -248,7 +248,7 @@
         </style>
         <div class="container">
           <div class="content-div">
-            <div id="content-wrapper">
+            <div>
               <style>
                   me {
                       display: flex;
@@ -331,65 +331,6 @@
         </div>
       </div>
     </div>
-
-    <script>
-      async function navigateWithViewTransition(url) {
-        const wrapper = document.getElementById("content-wrapper");
-        const contentDiv = document.getElementById("content-div");
-
-        const oldHeight = wrapper.offsetHeight;
-
-        // Fetch new HTML
-        const response = await fetch(url, {
-          headers: { "X-Requested-With": "XMLHttpRequest" }
-        });
-        const html = await response.text();
-
-        // Inject HTML into a hidden container to measure
-        const staging = document.createElement("div");
-        staging.style.visibility = "hidden";
-        staging.style.position = "absolute";
-        staging.style.pointerEvents = "none";
-        staging.style.width = wrapper.offsetWidth + "px";
-        staging.innerHTML = html;
-
-        document.body.appendChild(staging);
-
-        // Wait for layout (fonts, images, etc.)
-        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
-        const newContent = staging.querySelector("#content-div");
-        const newHeight = newContent.offsetHeight;
-
-        document.body.removeChild(staging);
-
-        // Lock wrapper height to old height to prevent collapse during transition
-        wrapper.style.height = oldHeight + "px";
-        wrapper.style.overflow = "hidden";
-
-        // Start transition
-        const transition = document.startViewTransition(() => {
-          contentDiv.innerHTML = newContent.innerHTML;
-        });
-
-        transition.ready.then(() => {
-          // Animate height
-          const animation = wrapper.animate([
-            { height: oldHeight + "px" },
-            { height: newHeight + "px" }
-          ], {
-            duration: 400,
-            easing: "ease-in-out",
-            fill: "forwards"
-          });
-
-          animation.finished.then(() => {
-            wrapper.style.height = "";
-            wrapper.style.overflow = "";
-          });
-        });
-      }
-    </script>
 
   </body>
 </html>
