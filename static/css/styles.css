@@ -158,14 +158,16 @@ a {
     border-width: 4px;
     border-radius: 12px;
     padding: 4px;
-    overflow: hidden;
-    transition: height 2.3s ease;
+    overflow: hidden; /* fallback */
+    transition: height 300ms ease; /* fallback */
+    /* view-transition-name: slide-it; */
 }
 
-#content-div[data-view-transition="content-div"] {
-  view-transition-name: content-div;
+@keyframes fadeIn {
+    to {
+    opacity: 1;
+    }
 }
-
 
 @view-transition {
     navigation: auto;

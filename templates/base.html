@@ -208,7 +208,7 @@
 
               </div>
               <div>
-                <button id="id-logbutton" data-on-click="@get('/login_form')">
+                <button onclick='window.location.href = "/login_form"'>
                   <style>
                       me {
                           font-family: 'Noto Sans', sans-serif;
@@ -247,7 +247,7 @@
             }
         </style>
         <div class="container">
-          <div id="content-wrapper" class="content-div">
+          <div class="content-div">
             <div>
               <style>
                   me {
@@ -263,15 +263,12 @@
                       padding-right: clamp(18px, 20%, 272px);
                   }
               </style>
-              <div id="content-div" data-view-transition="'content-div'">
+              <div id="content-div">
                 {% block content %}
                 {% endblock %}
               </div>
-
             </div>
-
           </div>
-
           <script>
             document.addEventListener("ds:will-replace", () => {
               const container = document.querySelector(".content-div");
@@ -302,7 +299,6 @@
               });
             });
           </script>
-
         </div>
       </main>
 

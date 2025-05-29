@@ -71,7 +71,7 @@
 
 {% block button %}
   {% if useremail %}
-    <button id="id-logbutton" data-on-click="@get('/login_form')">
+    <button onclick='window.location.href = "/login_form"'>
       <style>
           me {
               font-family: 'Noto Sans', sans-serif;

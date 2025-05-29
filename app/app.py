@@ -80,17 +80,10 @@ async def logout(request: Request):
 
 @app.get("/login_form")
 def login_form(request: Request):
-    if request.headers.get('datastar-request') == 'true':
-        templ = templates.get_template("login.html")
-        rendered_html_str = "".join(templ.blocks["content"](templ.new_context({"request": request})))
-        async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
-        return DatastarStreamingResponse(_())
-    else:
-        return templates.TemplateResponse(
-            "login.html",
-            {"request": request}
-        )
+    return templates.TemplateResponse(
+        "login.html",
+        {"request": request}
+    )
 
 @app.post("/login_validate")
 async def login_validate(request: Request, email: Annotated[str, Form()], password: Annotated[str, Form()]):
