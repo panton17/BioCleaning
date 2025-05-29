@@ -333,48 +333,63 @@
     </div>
 
     <script>
-    async function navigateWithViewTransition(url) {
-      const wrapper = document.getElementById("content-wrapper");
-      const contentDiv = document.getElementById("content-div");
+      async function navigateWithViewTransition(url) {
+        const wrapper = document.getElementById("content-wrapper");
+        const contentDiv = document.getElementById("content-div");
 
-      const oldHeight = wrapper.offsetHeight;
+        const oldHeight = wrapper.offsetHeight;
 
-      // Start the transition
-      const transition = document.startViewTransition(async () => {
-        // Fetch the new fragment (just the inner content-div)
+        // Fetch new HTML
         const response = await fetch(url, {
-          headers: { "X-Requested-With": "XMLHttpRequest" },
+          headers: { "X-Requested-With": "XMLHttpRequest" }
         });
         const html = await response.text();
 
+        // Create a hidden staging area
         const temp = document.createElement("div");
+        temp.style.visibility = "hidden";
+        temp.style.position = "absolute";
+        temp.style.pointerEvents = "none";
+        temp.style.width = wrapper.offsetWidth + "px"; // constrain width
         temp.innerHTML = html;
-        const newFragment = temp.querySelector("#content-div");
-        if (!newFragment) return;
 
-        // Replace content
-        contentDiv.innerHTML = newFragment.innerHTML;
-      });
+        const newContentDiv = temp.querySelector("#content-div");
+        if (!newContentDiv) return;
 
-      transition.ready.then(() => {
-        const newHeight = wrapper.offsetHeight;
-        const animation = wrapper.animate(
-          [
-            { height: oldHeight + "px" },
-            { height: newHeight + "px" }
-          ],
-          {
-            duration: 400,
-            easing: "ease-in-out",
-            fill: "forwards"
-          }
-        );
+        document.body.appendChild(temp);
 
-        animation.finished.then(() => {
-          wrapper.style.height = ""; // Reset inline height
+        // Wait for layout: force image/font layout before measuring
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+        const newHeight = newContentDiv.offsetHeight;
+
+        // Cleanup
+        document.body.removeChild(temp);
+
+        // Start ViewTransition
+        const transition = document.startViewTransition(() => {
+          contentDiv.innerHTML = newContentDiv.innerHTML;
         });
-      });
-    }
+
+        transition.ready.then(() => {
+          // Animate wrapper height
+          const animation = wrapper.animate(
+            [
+              { height: oldHeight + "px" },
+              { height: newHeight + "px" }
+            ],
+            {
+              duration: 400,
+              easing: "ease-in-out",
+              fill: "forwards"
+            }
+          );
+
+          animation.finished.then(() => {
+            wrapper.style.height = "";
+          });
+        });
+      }
     </script>
 
   </body>
