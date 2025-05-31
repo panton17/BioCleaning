@@ -161,27 +161,19 @@ a {
     view-transition-name: slide-it;
 }
 
-.content-container {
-  overflow: hidden;
-  width: 100%;
-}
-
-.content-wrapper {
-  transition: height 0.5s ease;
-}
-
-
 @keyframes fadeIn {
     to {
     opacity: 1;
     }
 }
 
-/* @view-transition {
+@view-transition {
     navigation: auto;
-} */
+}
 
-
+@keyframes change-height {
+    to { height: calc-size(auto); }
+}
 
 @keyframes fade-in {
     from { opacity: 0; }

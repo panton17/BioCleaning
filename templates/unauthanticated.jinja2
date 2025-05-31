@@ -1,0 +1,54 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div id="content-div">
+  <!-- TITLE SINGLE -->
+  <div>
+    <style>
+        me {
+            width: 100%;
+            text-align: center;
+            padding-bottom: 8px;
+        }
+
+        me div {
+            padding-bottom: 14px;
+            font-family: 'Noto Serif', serif;
+            font-size: 24px;
+            font-weight: 400;
+            font-stretch: semi-condensed;
+            font-style: italic;
+        }
+
+        me hr {
+            display: block;
+            height: 1px;
+            border: 0;
+            border-top: 1px solid #a8a8a8;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <div>Unauthorized</div>
+    <hr />
+  </div>
+  <div>
+    <style>
+        me {
+            padding-bottom: 40px;
+            padding-top: 40px;
+        }
+    </style>
+    You are not authorized to visit this page.
+    <br />
+    <br />
+    Please
+    <a href="/login_form">Log in</a>
+    or
+    <a href="/signup_form">Sign up</a>
+    <br />
+  </div>
+</div>
+{% endblock %}

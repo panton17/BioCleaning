@@ -1,34 +1,39 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const contentDiv = document.querySelector('.content-div');
-  const wrapper = document.querySelector('.content-wrapper');
+function setupHeightTransition() {
+  const content = document.getElementById('content-div');
+  const wrapper = document.getElementById('content-wrapper');
   
-  function updateHeight() {
-    // Set explicit height before measurement
-    wrapper.style.height = `${contentDiv.scrollHeight}px`;
-    
-    // Force reflow
-    void wrapper.offsetHeight;
-    
-    // Set to auto after transition
-    setTimeout(() => {
-      wrapper.style.height = 'auto';
-    }, 500);
-  }
+  if (!content || !wrapper) return;
   
-  // Initialize height
-  updateHeight();
+  // Initialize
+  wrapper.style.height = `${content.scrollHeight}px`;
   
-  // Set up MutationObserver for dynamic content
-  const observer = new MutationObserver(function(mutations) {
-    updateHeight();
-  });
+  // Handle page load and resize
+  window.addEventListener('load', updateHeight);
+  window.addEventListener('resize', updateHeight);
   
-  observer.observe(contentDiv, {
+  // MutationObserver for dynamic content
+  const observer = new MutationObserver(updateHeight);
+  observer.observe(content, {
     childList: true,
     subtree: true,
     characterData: true
   });
   
-  // For AJAX content changes (if you use them)
-  document.addEventListener('ajaxComplete', updateHeight);
-});
+  function updateHeight() {
+    // Set current height
+    wrapper.style.height = `${content.scrollHeight}px`;
+    
+    // Force reflow
+    void wrapper.offsetHeight;
+    
+    // Animate to new height
+    wrapper.style.height = `${content.scrollHeight}px`;
+    
+    // Clean up after transition
+    setTimeout(() => {
+      wrapper.style.height = 'auto';
+    }, 500);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', setupHeightTransition);

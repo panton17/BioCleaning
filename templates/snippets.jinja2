@@ -154,24 +154,28 @@
   <div>
     <style>
         me {
-            margin-top: 29px;
-            margin-bottom: 0px;
-            text-align: center;
+            padding-bottom: 40px;
+            padding-top: 40px;
         }
 
-        me a {
-            color: var(--color-text-dark);
-            text-decoration: none;
-            font-weight: 400;
-            font-stretch: semi-condensed;
+        .animated-points {
+            display: inline-block;
+            animation: blink 1s steps(4, end) infinite;
         }
 
-        me a:hover {
-            text-decoration: underline;
-            cursor: pointer;
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            25% {
+                opacity: 0;
+            }
         }
     </style>
-    Redirecting...
+    <span>Redirecting</span>
+    <span class="animated-points">.</span>
+    <span class="animated-points">.</span>
+    <span class="animated-points">.</span>
   </div>
 
 </div>

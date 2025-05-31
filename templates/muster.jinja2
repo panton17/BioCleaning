@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.jinja2" %}
 
 {% block title %}Muster{% endblock %}
 {% block content %}
@@ -59,12 +59,12 @@
                 align-items: end;
             }
         </style>
-        {{ render_partial('partials/forms-input.html', fieldtext='First Name', type = 'text', name="", pattern="[\s\S]*") }}
-        {{ render_partial('partials/forms-info-popover.html', id='1', infotext='3That’s not enough, as we also need some sort of “trigger” to make the popover, well, pop! We get another attribute that turns any button flavored button into that trigger.') }}
+        {{ render_partial('partials/forms-input.jinja2', fieldtext='First Name', type = 'text', name="", pattern="[\s\S]*") }}
+        {{ render_partial('partials/forms-info-popover.jinja2', id='1', infotext='3That’s not enough, as we also need some sort of “trigger” to make the popover, well, pop! We get another attribute that turns any button flavored button into that trigger.') }}
       </div>
 
-      {{ render_partial('partials/forms-input.html', fieldtext='Email', type = 'email', name="", pattern="^[^@]+@[^@]+\.[^@]+$") }}
-      {{ render_partial('partials/forms-input.html', fieldtext='Engineer', type = 'password', name="", pattern="[\s\S]*") }}
+      {{ render_partial('partials/forms-input.jinja2', fieldtext='Email', type = 'email', name="", pattern="^[^@]+@[^@]+\.[^@]+$") }}
+      {{ render_partial('partials/forms-input.jinja2', fieldtext='Engineer', type = 'password', name="", pattern="[\s\S]*") }}
 
       <!-- SELECT WITH POPOVER -->
       <div>
@@ -74,8 +74,8 @@
                 align-items: end;
             }
         </style>
-        {{ render_partial('partials/forms-select.html', titledisabled='Select Default', optionslist=['option26', 'password', 'Engineer']) }}
-        {{ render_partial('partials/forms-info-popover.html', id='2', infotext='2That’s not enough, as we also need some sort of “trigger” to make the popover, well, pop! We get another attribute that turns any button flavored button into that trigger.') }}
+        {{ render_partial('partials/forms-select.jinja2', titledisabled='Select Default', optionslist=['option26', 'password', 'Engineer']) }}
+        {{ render_partial('partials/forms-info-popover.jinja2', id='2', infotext='2That’s not enough, as we also need some sort of “trigger” to make the popover, well, pop! We get another attribute that turns any button flavored button into that trigger.') }}
       </div>
 
     </form>

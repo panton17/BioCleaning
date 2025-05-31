@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request, Depends, Form, status
-from typing import Annotated, Iterator
+from fastapi import FastAPI, Request, Depends, Form
+from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
 from app.db import create_db_and_tables, User
 from app.schemas import UserCreate, UserRead, UserUpdate
@@ -14,7 +14,6 @@ import jinja_partials # type: ignore
 import httpx
 from datastar_py.fastapi import DatastarStreamingResponse
 from datastar_py.sse import ServerSentEventGenerator as SSE
-from datastar_py.consts import FragmentMergeMode
 
 import time
 
@@ -51,7 +50,7 @@ rendered_html_str:str = ""
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     return templates.TemplateResponse(
-        "index.html",
+        "index.jinja2",
         {"request": request}
     )
 
@@ -72,19 +71,12 @@ async def logout(request: Request):
     print("Response:", response.json())
     if response.status_code == 201:
         return templates.TemplateResponse(
-                "snippets.html",
+                "snippets.jinja2",
                 {"request": request},
                 status_code=201,
                 block_name="signupsuccess"
         )
     return "Unknown return Code!!"
-
-# @app.get("/login_form")
-# def login_form(request: Request):
-#     return templates.TemplateResponse(
-#         "login.html",
-#         {"request": request}
-#     )
 
 def is_fragment(request: Request) -> bool:
     return request.headers.get("X-Requested-With") == "XMLHttpRequest"
@@ -92,8 +84,8 @@ def is_fragment(request: Request) -> bool:
 @app.get("/login_form", response_class=HTMLResponse)
 async def login(request: Request):
     if is_fragment(request):
-        return templates.TemplateResponse("login.html", {"request": request}, block_name="content")
-    return templates.TemplateResponse("login.html", {"request": request})
+        return templates.TemplateResponse("login.jinja2", {"request": request}, block_name="content")
+    return templates.TemplateResponse("login.jinja2", {"request": request})
 
 @app.post("/login_validate")
 async def login_validate(request: Request, email: Annotated[str, Form()], password: Annotated[str, Form()]):
@@ -126,46 +118,42 @@ async def login_validate(request: Request, email: Annotated[str, Form()], passwo
     if response.status_code == 200 or response.status_code == 204:
         print(str(response.cookies.get('auth')))
         cookie_value = response.cookies.get('auth', '')
-        templ = templates.get_template("snippets.html")
+        templ = templates.get_template("snippets.jinja2")
         rendered_html_str = "".join(templ.blocks["loginsuccess"](templ.new_context({"request": request})))
         async def _():
             yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
-            time.sleep(3)
-            yield SSE.redirect("/authenticated-route") # here I need something like data-on-click="@get('/authenticated-route')" but from the server
+            time.sleep(4)
+            yield SSE.redirect("/authenticated-route")
 
         streaming_response = DatastarStreamingResponse(_())
         streaming_response.headers['Set-Cookie'] = f"auth={cookie_value}; HttpOnly; Secure; Path=/"
         return streaming_response
 
-        # redirect = RedirectResponse(url=f'{base_url}authenticated-route', status_code=status.HTTP_302_FOUND)
-        # redirect.set_cookie(key='auth', value=response.cookies.get('auth') or '', httponly=True)
-        # return redirect
-
     elif response.status_code == 400:
-        templ = templates.get_template("snippets.html")
+        templ = templates.get_template("snippets.jinja2")
         rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"loginerrordiv", "signuperrormessage": 'Invalid credentials', "errortitle": 'Login failed'})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
+            yield SSE.merge_fragments(fragments=rendered_html_str)
         return DatastarStreamingResponse(_())
     else:
-        templ = templates.get_template("snippets.html")
+        templ = templates.get_template("snippets.jinja2")
         rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"loginerrordiv", "signuperrormessage": f"Login failed with status code: {response.status_code}", "errortitle": 'Login failed'})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
+            yield SSE.merge_fragments(fragments=rendered_html_str)
         return DatastarStreamingResponse(_())
 
 
 @app.get("/signup_form")
 def signup_form(request: Request):
     if request.headers.get('datastar-request') == 'true':
-        templ = templates.get_template("signup.html")
+        templ = templates.get_template("signup.jinja2")
         rendered_html_str = "".join(templ.blocks["content"](templ.new_context({"request": request})))
         async def _():
             yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
         return DatastarStreamingResponse(_())
     else:
         return templates.TemplateResponse(
-            "signup.html",
+            "signup.jinja2",
             {"request": request}
         )
 
@@ -176,10 +164,10 @@ async def signup_validate(request: Request, email: Annotated[str, Form()], passw
     print('passwordrepeat:' + passwordrepeat)
 
     if not password == passwordrepeat:
-        templ = templates.get_template("snippets.html")
+        templ = templates.get_template("snippets.jinja2")
         rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"signuperrordiv", "signuperrormessage": 'Password Repeat missmatch', "errortitle": 'Sign Up failed'})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
+            yield SSE.merge_fragments(fragments=rendered_html_str)
         return DatastarStreamingResponse(_())
 
     url = "http://localhost:8000/auth/register"
@@ -199,7 +187,7 @@ async def signup_validate(request: Request, email: Annotated[str, Form()], passw
     print("Status Code:", response.status_code)
     print("Response:", response.json())
     if response.status_code == 201:
-        templ = templates.get_template("snippets.html")
+        templ = templates.get_template("snippets.jinja2")
         rendered_html_str = "".join(templ.blocks["signupsuccess"](templ.new_context({"request": request})))
         async def _():
             yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
@@ -207,22 +195,22 @@ async def signup_validate(request: Request, email: Annotated[str, Form()], passw
     elif response.status_code == 400:
         code_value = response.json()["detail"]
         if code_value == 'REGISTER_USER_ALREADY_EXISTS':
-            templ = templates.get_template("snippets.html")
+            templ = templates.get_template("snippets.jinja2")
             rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"signuperrordiv", "signuperrormessage": 'Email address already in use', "errortitle": 'Sign Up failed'})))
             async def _():
-                yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
+                yield SSE.merge_fragments(fragments=rendered_html_str)
             return DatastarStreamingResponse(_())
         elif code_value == 'REGISTER_INVALID_PASSWORD':
-            templ = templates.get_template("snippets.html")
+            templ = templates.get_template("snippets.jinja2")
             rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"signuperrordiv", "signuperrormessage": 'Invalid Password', "errortitle": 'Sign Up failed'})))
             async def _():
-                yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
+                yield SSE.merge_fragments(fragments=rendered_html_str)
             return DatastarStreamingResponse(_())
     elif response.status_code == 422:
-        templ = templates.get_template("snippets.html")
+        templ = templates.get_template("snippets.jinja2")
         rendered_html_str = "".join(templ.blocks["signupfailed"](templ.new_context({"request": request, "id":"signuperrordiv", "signuperrormessage": 'Validation Error', "errortitle": 'Sign Up failed'})))
         async def _():
-            yield SSE.merge_fragments(fragments=rendered_html_str, use_view_transition=True)
+            yield SSE.merge_fragments(fragments=rendered_html_str)
         return DatastarStreamingResponse(_())
     print("Unknown return Code!!")
     return "Unknown return Code!!"
@@ -232,13 +220,13 @@ async def signup_validate(request: Request, email: Annotated[str, Form()], passw
 async def forgotpassword_form(request: Request):
     if request.headers.get('datastar-request') == 'true':
         return templates.TemplateResponse(
-            "forgotpassword.html",
+            "forgotpassword.jinja2",
             {"request": request},
             block_name="content"
         )
     else:
         return templates.TemplateResponse(
-            "forgotpassword.html",
+            "forgotpassword.jinja2",
             {"request": request}
     )
 
@@ -246,13 +234,13 @@ async def forgotpassword_form(request: Request):
 async def muster_form(request: Request):
     if request.headers.get('datastar-request') == 'true':
         return templates.TemplateResponse(
-            "muster.html",
+            "muster.jinja2",
             {"request": request},
             block_name="content"
         )
     else:
         return templates.TemplateResponse(
-            "muster.html",
+            "muster.jinja2",
             {"request": request}
     )
 
@@ -285,17 +273,12 @@ app.include_router(
 @app.get("/authenticated-route")
 async def authenticated_route(request: Request, user: User = Depends(current_user)):
     if user is None:
-        return {"message": "Unauthanticated route (user is None)."}
+        return templates.TemplateResponse(
+            "unauthanticated.jinja2",
+            {"request": request, "user": user}
+        )
     else:
-        # return {"message": f"Hello from calc01 {user.email}!"}
-        if request.headers.get('datastar-request') == 'true':
-            return templates.TemplateResponse(
-                "calc01.html",
-                {"request": request, "useremail": user.email},
-                block_names=["content","button"]
-            )
-        else:
-            return templates.TemplateResponse(
-                "calc01.html",
-                {"request": request, "useremail": user.email}
+        return templates.TemplateResponse(
+            "calc01.jinja2",
+            {"request": request, "user": user}
         )

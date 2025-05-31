@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.jinja2" %}
 
 {% block title %}Sign Up{% endblock %}
 {% block content %}
@@ -37,9 +37,9 @@
 
   <form data-signals="{users_submit_button_disable:false}" data-on-submit="$users_submit_button_disable = true;@post('/signup_validate', {contentType: 'form'})">
 
-    {{ render_partial('partials/forms-input.html', idalwayschange='signupemail', name='email', fieldtext='Email', type = 'email', pattern="^[^@]+@[^@]+\.[^@]+$", errormessage="Invalid email address") }}
-    {{ render_partial('partials/forms-input-password.html', idalwayschange='signuppass', name='password', fieldtext='Password') }}
-    {{ render_partial('partials/forms-input-password.html', idalwayschange='signuppassrepeat', name='passwordrepeat', fieldtext='Confirm Password') }}
+    {{ render_partial('partials/forms-input.jinja2', idalwayschange='signupemail', name='email', fieldtext='Email', type = 'email', pattern="^[^@]+@[^@]+\.[^@]+$", errormessage="Invalid email address") }}
+    {{ render_partial('partials/forms-input-password.jinja2', idalwayschange='signuppass', name='password', fieldtext='Password') }}
+    {{ render_partial('partials/forms-input-password.jinja2', idalwayschange='signuppassrepeat', name='passwordrepeat', fieldtext='Confirm Password') }}
     <!-- SUBMIT BUTTON -->
     <button type="submit" data-attr-disabled="$users_submit_button_disable">
       <style>

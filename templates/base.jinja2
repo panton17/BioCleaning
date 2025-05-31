@@ -208,6 +208,32 @@
 
               </div>
               <div>
+                {% if user is defined and user is not none %}
+                <button onclick="location.href='/logout'">
+                  <style>
+                      me {
+                          font-family: 'Noto Sans', sans-serif;
+                          font-size: 16px;
+                          font-weight: 600;
+                          font-stretch: condensed;
+                          background-color: transparent;
+                          color: var(--color-text-bright);
+                          border: 1px solid var(--color-text-bright);
+                          padding: 2px 14px;
+                          cursor: pointer;
+                          border-width: 1px;
+                          border-radius: 6px;
+                          margin-left: auto;
+                      }
+
+                      me:hover {
+                          background-color: var(--color-background-bright);
+                          color: var(--color-text-dark);
+                      }
+                  </style>
+                  Log out
+                </button>
+                {% else %}
                 <button onclick="location.href='/login_form'">
                   <style>
                       me {
@@ -232,6 +258,8 @@
                   </style>
                   Log in
                 </button>
+
+                {% endif %}
               </div>
 
 
@@ -247,34 +275,30 @@
             }
         </style>
         <div class="container">
-          <div class="content-container">
-            <div class="content-wrapper">
-              <div class="content-div">
-                <div>
-                  <style>
-                      me {
-                          display: flex;
-                          flex-direction: column;
-                          width: auto;
-                          max-width: 820px;
-                          background-color: var(--color-background-bright);
-                          border-radius: 6px;
-                          padding-top: 46px;
-                          padding-bottom: 16px;
-                          padding-left: clamp(18px, 20%, 272px);
-                          padding-right: clamp(18px, 20%, 272px);
-                      }
-                  </style>
-                  <div id="content-div">
-                    {% block content %}
-                    {% endblock %}
-                  </div>
-                </div>
+          <div class="content-div">
+            <div>
+              <style>
+                  me {
+                      display: flex;
+                      flex-direction: column;
+                      width: auto;
+                      max-width: 820px;
+                      background-color: var(--color-background-bright);
+                      border-radius: 6px;
+                      padding-top: 46px;
+                      padding-bottom: 16px;
+                      padding-left: clamp(18px, 20%, 272px);
+                      padding-right: clamp(18px, 20%, 272px);
+                  }
+              </style>
+              <div id="content-div">
+                {% block content %}
+                {% endblock %}
               </div>
             </div>
           </div>
-        </div>
 
+        </div>
       </main>
 
       <div>
@@ -335,6 +359,6 @@
         </div>
       </div>
     </div>
-  <script src="{{ url_for('static', path='/js/height-transition.js') }}"></script>
+
   </body>
 </html>
